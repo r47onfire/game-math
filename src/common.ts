@@ -1,0 +1,8 @@
+export const sin = Math.sin;
+export const cos = Math.cos;
+export const tan = Math.tan;
+export const PI = Math.PI;
+export const TAU = PI * 2;
+export const HALF_PI = PI / 2;
+export const atan2 = Math.atan2;
+export const acos = Math.acos;

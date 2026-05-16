@@ -1,3 +1,10 @@
-export default function hi() {
-    console.log("hi");
-}
+export * from "./ai";
+export * from "./color";
+export * from "./common";
+export * from "./geometry";
+export * from "./graph";
+export * from "./linearAlgebra";
+export * from "./misc";
+export * from "./sort";
+export * from "./random";
+
