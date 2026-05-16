@@ -291,7 +291,7 @@ export const Mat4_clone = (m: Mat4): Mat4 => {
     return new Mat4(m.m.slice() as array16<number>);
 }
 
-export const M4_IDENTITY = freeze(new Mat4(freeze([
+export const M4_IDENTITY = /* @__PURE__ */ freeze(new Mat4(freeze([
     1, 0, 0, 0,
     0, 1, 0, 0,
     0, 0, 1, 0,

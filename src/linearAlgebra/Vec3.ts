@@ -65,11 +65,11 @@ export const Vec3_unit = (v: Vec3) => {
     return Vec3_div_sv(v, Vec3_length(v));
 }
 
-export const V3_LEFT = freeze(new Vec3(-1, 0, 0));
-export const V3_RIGHT = freeze(new Vec3(1, 0, 0));
-export const V3_UP = freeze(new Vec3(0, -1, 0));
-export const V3_DOWN = freeze(new Vec3(0, 1, 0));
-export const V3_FORWARD = freeze(new Vec3(0, 0, 1));
-export const V3_BACK = freeze(new Vec3(0, 0, -1));
-export const V3_ZERO = freeze(new Vec3(0, 0, 0));
-export const V3_ONE = freeze(new Vec3(1, 1, 1));
+export const V3_LEFT = /* @__PURE__ */ freeze(new Vec3(-1, 0, 0));
+export const V3_RIGHT = /* @__PURE__ */ freeze(new Vec3(1, 0, 0));
+export const V3_UP = /* @__PURE__ */ freeze(new Vec3(0, -1, 0));
+export const V3_DOWN = /* @__PURE__ */ freeze(new Vec3(0, 1, 0));
+export const V3_FORWARD = /* @__PURE__ */ freeze(new Vec3(0, 0, 1));
+export const V3_BACK = /* @__PURE__ */ freeze(new Vec3(0, 0, -1));
+export const V3_ZERO = /* @__PURE__ */ freeze(new Vec3(0, 0, 0));
+export const V3_ONE = /* @__PURE__ */ freeze(new Vec3(1, 1, 1));

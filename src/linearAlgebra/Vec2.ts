@@ -490,22 +490,22 @@ export const Vec2_equals = (v: Vec2, other: Vec2): boolean => {
 }
 
 /** An empty 2D vector. (0, 0) */
-export const V2_ZERO = freeze(new Vec2(0, 0));
+export const V2_ZERO = /* @__PURE__ */ freeze(new Vec2(0, 0));
 /** A 2D vector with both components of 1. (1, 1) */
-export const V2_ONE = freeze(new Vec2(1, 1));
+export const V2_ONE = /* @__PURE__ */ freeze(new Vec2(1, 1));
 /** A 2D vector signaling to the left. (-1, 0) */
-export const V2_LEFT = freeze(new Vec2(-1, 0));
+export const V2_LEFT = /* @__PURE__ */ freeze(new Vec2(-1, 0));
 /** A 2D vector signaling to the right. (1, 0) */
-export const V2_RIGHT = freeze(new Vec2(1, 0));
+export const V2_RIGHT = /* @__PURE__ */ freeze(new Vec2(1, 0));
 /** A 2D vector signaling up. (0, -1) */
-export const V2_UP = freeze(new Vec2(0, -1));
+export const V2_UP = /* @__PURE__ */ freeze(new Vec2(0, -1));
 /** A 2D vector signaling down. (0, 1) */
-export const V2_DOWN = freeze(new Vec2(0, 1));
+export const V2_DOWN = /* @__PURE__ */ freeze(new Vec2(0, 1));
 
-export const V2_TOP_LEFT = freeze(new Vec2(-1, -1));
-export const V2_TOP = freeze(new Vec2(0, -1));
-export const V2_TOP_RIGHT = freeze(new Vec2(1, -1));
-export const V2_CENTER = V2_ZERO;
-export const V2_BOTTOM_LEFT = freeze(new Vec2(-1, 1));
-export const V2_BOTTOM = V2_DOWN;
-export const V2_BOTTOM_RIGHT = V2_ONE;
+export const V2_TOP_LEFT = /* @__PURE__ */ freeze(new Vec2(-1, -1));
+export const V2_TOP = /* @__PURE__ */ freeze(new Vec2(0, -1));
+export const V2_TOP_RIGHT = /* @__PURE__ */ freeze(new Vec2(1, -1));
+export const V2_CENTER = /* @__PURE__ */ V2_ZERO;
+export const V2_BOTTOM_LEFT = /* @__PURE__ */ freeze(new Vec2(-1, 1));
+export const V2_BOTTOM = /* @__PURE__ */ V2_DOWN;
+export const V2_BOTTOM_RIGHT = /* @__PURE__ */ V2_ONE;

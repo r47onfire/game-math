@@ -122,14 +122,14 @@ export const Color_fromCSS = (cssColor: CSSColorKeywords) => {
     return Color_fromHexStr(color);
 }
 
-export const COLOR_RED = freeze(new Color(255, 0, 0));
-export const COLOR_GREEN = freeze(new Color(0, 255, 0));
-export const COLOR_BLUE = freeze(new Color(0, 0, 255));
-export const COLOR_YELLOW = freeze(new Color(255, 255, 0));
-export const COLOR_MAGENTA = freeze(new Color(255, 0, 255));
-export const COLOR_CYAN = freeze(new Color(0, 255, 255));
-export const COLOR_WHITE = freeze(new Color(255, 255, 255));
-export const COLOR_BLACK = freeze(new Color(0, 0, 0));
+export const COLOR_RED = /* @__PURE__ */ freeze(new Color(255, 0, 0));
+export const COLOR_GREEN = /* @__PURE__ */ freeze(new Color(0, 255, 0));
+export const COLOR_BLUE = /* @__PURE__ */ freeze(new Color(0, 0, 255));
+export const COLOR_YELLOW = /* @__PURE__ */ freeze(new Color(255, 255, 0));
+export const COLOR_MAGENTA = /* @__PURE__ */ freeze(new Color(255, 0, 255));
+export const COLOR_CYAN = /* @__PURE__ */ freeze(new Color(0, 255, 255));
+export const COLOR_WHITE = /* @__PURE__ */ freeze(new Color(255, 255, 255));
+export const COLOR_BLACK = /* @__PURE__ */ freeze(new Color(0, 0, 0));
 
 export const Color_clone = (c: Color): Color => {
     return new Color(c.r, c.g, c.b);
