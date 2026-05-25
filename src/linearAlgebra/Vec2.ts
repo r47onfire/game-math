@@ -450,7 +450,7 @@ export const Vec2_spherical_lerp = (v: Vec2, dest: Vec2, t: number): Vec2 => {
 export const Vec2_spherical_lerp_m = (src: Vec2, dst: Vec2, t: number, out: Vec2): Vec2 => {
     const cos = Vec2_dot(src, dst);
     const sin_ = Vec2_cross(src, dst);
-    if (Math.abs(sin_) < 1e-6) {
+    if (abs(sin_) < 1e-6) {
         return Vec2_lerp_m(src, dst, t, out);
     }
     const angle = atan2(sin_, cos);

@@ -1,4 +1,4 @@
-import { max, min } from "lib0/math";
+import { max, min, round } from "lib0/math";
 import { freeze } from "lib0/object";
 import { clamp, lerpNumber } from "../misc";
 import { CSS_COLOR_MAP } from "./namedColors";
@@ -82,9 +82,9 @@ export const Color_fromHSL = (h: number, s: number, l: number) => {
     const b = hue2rgb(p, q, h - 1 / 3);
 
     return new Color(
-        Math.round(r * 255),
-        Math.round(g * 255),
-        Math.round(b * 255),
+        round(r * 255),
+        round(g * 255),
+        round(b * 255),
     );
 }
 

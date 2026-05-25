@@ -1,4 +1,4 @@
-import { add, log2 } from "lib0/math";
+import { add, log2, max } from "lib0/math";
 import { values } from "lib0/object";
 import { Random_floatBelow, RandomSource } from "../random";
 type Predicate = (value: any) => boolean;
@@ -170,7 +170,7 @@ export const DecisionTree_fromExamples = (
         const gains = attributes.map((_, index) =>
             gain(data[index]!, outcomes)
         );
-        const maxGain = Math.max(...gains);
+        const maxGain = gains.reduce(max, -Infinity);
         const index = gains.indexOf(maxGain);
         return index;
     }

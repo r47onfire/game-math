@@ -1,3 +1,4 @@
+import { floor } from "lib0/math";
 import { swap } from "../sort";
 
 export class BinaryHeap<T> {
@@ -47,7 +48,7 @@ export class BinaryHeap<T> {
 
     #moveUp(pos: number) {
         while (pos > 0) {
-            const parent = Math.floor((pos - 1) / 2);
+            const parent = floor((pos - 1) / 2);
             if (!this.#compareFn(this.#items[pos]!, this.#items[parent]!)) {
                 if (this.#items[pos]! >= this.#items[parent]!) {
                     break;
@@ -59,7 +60,7 @@ export class BinaryHeap<T> {
     }
 
     #moveDown(pos: number) {
-        while (pos < Math.floor(this.#items.length / 2)) {
+        while (pos < floor(this.#items.length / 2)) {
             var child = 2 * pos + 1;
             if (
                 child < this.#items.length - 1

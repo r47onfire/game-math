@@ -1,3 +1,5 @@
+import { max, min } from "lib0/math";
+
 type Predicate = (system: RuleSystem) => boolean;
 type Action = (system: RuleSystem) => void;
 
@@ -152,7 +154,7 @@ export class RuleSystem {
      * @param grade - The optional grade to use.
      */
     assert(fact: string, grade: number = 1) {
-        this.#facts.set(fact, Math.min(1, this.#gradeForFact(fact) + grade));
+        this.#facts.set(fact, min(1, this.#gradeForFact(fact) + grade));
     }
 
     /**
@@ -161,7 +163,7 @@ export class RuleSystem {
      * @param grade - The optional grade to use.
      */
     retract(fact: string, grade: number = 1) {
-        this.#facts.set(fact, Math.max(0, this.#gradeForFact(fact) - grade));
+        this.#facts.set(fact, max(0, this.#gradeForFact(fact) - grade));
     }
 
     /**

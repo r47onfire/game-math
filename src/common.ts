@@ -6,3 +6,4 @@ export const TAU = PI * 2;
 export const HALF_PI = PI / 2;
 export const atan2 = Math.atan2;
 export const acos = Math.acos;
+export const atan = Math.atan;

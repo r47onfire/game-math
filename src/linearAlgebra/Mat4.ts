@@ -1,9 +1,10 @@
 import { sqrt } from "lib0/math";
 import { freeze } from "lib0/object.js";
-import { cos, HALF_PI, sin } from "../common";
+import { acos, atan, cos, HALF_PI, sin } from "../common";
 import { deg2rad, rad2deg } from "../misc";
 import { Vec2 } from "./Vec2";
 import { Vec3 } from "./Vec3";
+import { Mat23 } from "./Mat23";
 
 type array16<T> = [
     T, T, T, T,
@@ -13,13 +14,23 @@ type array16<T> = [
 ];
 
 /**
- * @group Math
+ * The values in the array are stored in column-major order so it's easy to send to WebGL
  */
 export class Mat4 {
 
     constructor(public m: array16<number>) {
     }
 
+}
+
+export const Mat4_from_Mat23 = (m: Mat23): Mat4 => {
+    const { a, b, c, d, e, f } = m;
+    return new Mat4([
+        a, b, 0, 0,
+        c, d, 0, 0,
+        0, 0, 1, 0,
+        e, f, 0, 1,
+    ]);
 }
 
 export const Mat4_translateXY = (p: Vec2): Mat4 => {
@@ -199,15 +210,15 @@ export const Mat4_getRotation = (m: Mat4) => {
         const r = sqrt(m.m[0] * m.m[0] + m.m[1] * m.m[1]);
         return rad2deg(
             m.m[1] > 0
-                ? Math.acos(m.m[0] / r)
-                : -Math.acos(m.m[0] / r));
+                ? acos(m.m[0] / r)
+                : -acos(m.m[0] / r));
     }
     if (m.m[4] != 0 || m.m[5] != 0) {
-        const s = Math.sqrt(m.m[4] * m.m[4] + m.m[5] * m.m[5]);
+        const s = sqrt(m.m[4] * m.m[4] + m.m[5] * m.m[5]);
         return rad2deg(
             HALF_PI - (m.m[5] > 0
-                ? Math.acos(-m.m[4] / s)
-                : -Math.acos(m.m[4] / s)));
+                ? acos(-m.m[4] / s)
+                : -acos(m.m[4] / s)));
     }
     return 0;
 }
@@ -216,14 +227,14 @@ export const Mat4_getSkew = (m: Mat4) => {
     if (m.m[0] != 0 || m.m[1] != 0) {
         const r = sqrt(m.m[0] * m.m[0] + m.m[1] * m.m[1]);
         return new Vec2(
-            Math.atan(m.m[0] * m.m[4] + m.m[1] * m.m[5]) / (r * r),
+            atan(m.m[0] * m.m[4] + m.m[1] * m.m[5]) / (r * r),
             0);
     }
     else if (m.m[4] != 0 || m.m[5] != 0) {
         const s = sqrt(m.m[4] * m.m[4] + m.m[5] * m.m[5]);
         return new Vec2(
             0,
-            Math.atan(m.m[0] * m.m[4] + m.m[1] * m.m[5]) / (s * s));
+            atan(m.m[0] * m.m[4] + m.m[1] * m.m[5]) / (s * s));
     }
     else {
         return new Vec2(0, 0);
@@ -278,10 +289,8 @@ export const Mat4_invert = (m: Mat4): Mat4 => {
         + m.m[2] * out[8]
         + m.m[3] * out[12];
 
-    for (var i = 0; i < 4; i++) {
-        for (var j = 0; j < 4; j++) {
-            out[i * 4 + j]! /= det;
-        }
+    for (var i = 0; i < 16; i++) {
+        out[i]! /= det;
     }
 
     return new Mat4(out as array16<number>);
