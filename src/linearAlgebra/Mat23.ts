@@ -3,6 +3,8 @@ import { atan2, cos, sin, tan } from "../common";
 import { deg2rad, rad2deg } from "../misc";
 import { Mat2 } from "./Mat2";
 import { Vec2 } from "./Vec2";
+import { freeze } from "lib0/object.js";
+import { Mat4 } from "./Mat4";
 
 export class Mat23 {
     // 2x3 matrix, 2 rows and 3 columns, the last row is implicitly (0, 0, 1)
@@ -366,3 +368,5 @@ export const Mat23_getSkew = (m: Mat23) => {
     }
     return new Vec2(0);
 }
+
+export const M23_IDENTITY = /* @__PURE__ */ freeze(new Mat23());
