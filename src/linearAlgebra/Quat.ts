@@ -5,7 +5,6 @@ import { Mat4 } from "./Mat4";
 import { Vec3, Vec3_unit } from "./Vec3";
 
 export class Quat {
-
     constructor(public x: number, public y: number, public z: number, public w: number) {
     }
 }
@@ -154,15 +153,14 @@ export const Quat_sphericalLerp = (q: Quat, other: Quat, t: number) => {
 }
 
 export const Quat_rotate = (q: Quat, p: Vec3) => {
-    const x = q.x;
-    const y = q.y;
-    const z = q.z;
-    const w = q.w;
+    const { x, y, z, w } = q;
     return new Vec3(
         w * w * p.x + 2 * y * w * p.z - 2 * z * w * p.y + x * x * p.x
         + 2 * y * x * p.y + 2 * z * x * p.z - z * z * p.x - y * y * p.x,
+
         2 * x * y * p.x + y * y * p.y + 2 * z * y * p.z + 2 * w * z * p.x
         - z * z * p.y + w * w * p.y - 2 * x * w * p.z - x * x * p.y,
+
         2 * x * z * p.x + 2 * y * z * p.y + z * z * p.z - 2 * w * y * p.x
         - y * y * p.z + 2 * w * x * p.y - x * x * p.z + w * w * p.z,
     );

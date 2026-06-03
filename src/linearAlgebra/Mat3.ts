@@ -1,3 +1,4 @@
+import { cos, sin } from "../common";
 import { Mat2 } from "./Mat2";
 
 class Mat3 {

@@ -34,7 +34,7 @@ export const Random_intBetween = (random: RandomSource, a: number, b: number): n
 }
 
 export const Random_floatBelow = (random: RandomSource, a: number): number => {
-    return Random_floatBetween(random, 0, a);
+    return random() * a;
 }
 
 export const Random_intBelow = (random: RandomSource, a: number): number => {
@@ -68,7 +68,7 @@ export const Random_vec2 = (random: RandomSource, a: Vec2, b: Vec2): Vec2 => {
  * @example
  * ```js
  * const rng = ...;
- * const color = rng.genColor(rgb(0,0,0), rgb(255,255,255))
+ * const color = Random_color(rng, new Color(0,0,0), new Color(255,255,255))
  * ```
  *
  * @returns A color between colors a and b.
@@ -111,8 +111,7 @@ export const Random_indexWeighted = (random: RandomSource, probabilities: number
     var index = 0;
     var probabilitySum = probabilities[0]!;
     while (value > probabilitySum) {
-        index++;
-        probabilitySum += probabilities[index]!;
+        probabilitySum += probabilities[++index]!;
     }
     return index;
 }
@@ -123,17 +122,12 @@ export const Random_chooseWeighted = <T>(
     items: [T, number][] | Map<T, number> | Record<string, number>,
 ): T => {
 
-    const list = (itemCollection => {
-        if (isArray(itemCollection)) {
-            return itemCollection;
-        }
-        else if (items instanceof Map) {
-            return [...items.entries()];
-        }
-        else {
-            return Object.entries(items) as [T, number][];
-        }
-    })(items);
-    const probabilities = list.map(p => p[1]);
-    return list[Random_indexWeighted(random, probabilities)]![0];
+    if (items instanceof Map) {
+        items = [...items.entries()];
+    } else if (!isArray(items)) {
+        items = Object.entries(items) as [T, number][];
+    }
+    const list = items.map(i => i[0]);
+    const probabilities = items.map(i => i[1]);
+    return list[Random_indexWeighted(random, probabilities)]!;
 }

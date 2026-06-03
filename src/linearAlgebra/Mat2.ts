@@ -1,5 +1,6 @@
 import { abs, sqrt } from "lib0/math";
-import { V2_RIGHT, Vec2 } from "./Vec2";
+import { cos, sin } from "../common";
+import { V2_DOWN, V2_RIGHT, Vec2 } from "./Vec2";
 
 export class Mat2 {
     // 2x2 matrix
@@ -45,7 +46,7 @@ export const Mat2_transpose = (m: Mat2) => {
     );
 }
 
-export const Mat2_eigenvalues = (m_: Mat2) => {
+export const Mat2_eigenvalues = (m_: Mat2): [number, number] => {
     const m = Mat2_trace(m_) / 2;
     const d = Mat2_det(m_);
     const e1 = m + sqrt(m * m - d);
@@ -53,19 +54,19 @@ export const Mat2_eigenvalues = (m_: Mat2) => {
     return [e1, e2];
 }
 
-export const Mat2_eigenvectors = (m: Mat2, e1: number, e2: number) => {
+export const Mat2_eigenvectors = (m: Mat2, e1: number, e2: number): [Vec2, Vec2] => {
     if (m.c != 0) {
-        return [[e1 - m.d, m.c], [e2 - m.d, m.c]];
+        return [new Vec2(e1 - m.d, m.c), new Vec2(e2 - m.d, m.c)];
     }
     else if (m.b != 0) {
-        return [[m.b, e1 - m.a], [m.b, e2 - m.a]];
+        return [new Vec2(m.b, e1 - m.a), new Vec2(m.b, e2 - m.a)];
     }
     else {
         if (abs(Mat2_transformPoint(m, V2_RIGHT).x - e1) < Number.EPSILON) {
-            return [[1, 0], [0, 1]];
+            return [V2_RIGHT, V2_DOWN];
         }
         else {
-            return [[0, 1], [1, 0]];
+            return [V2_DOWN, V2_RIGHT];
         }
     }
 }

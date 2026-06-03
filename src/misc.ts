@@ -55,7 +55,7 @@ export const step = (edge: number, x: number) => {
 
 /** Like the GLSL function of the same name */
 export const smoothstep = (edge0: number, edge1: number, x: number) => {
-    x = clamp((x - edge0) / (edge1 - edge0), 0, 1);
+    x = mapClamped(x, edge0, edge1, 0, 1);
     return x * x * (3 - 2 * x);
 }
 
