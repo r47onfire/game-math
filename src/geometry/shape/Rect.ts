@@ -1,10 +1,9 @@
 import { abs, max, min, sqrt } from "lib0/math";
-import { Mat23, Mat23_transformPoint_m, Mat23_transformPointV_m, Vec2, Vec2_addC, Vec2_copy, Vec2_dot } from "../../linearAlgebra";
-import { Random_floatBelow, RandomSource } from "../../random";
-import { Polygon } from "./Polygon";
-import { Shape } from "./Shape";
+import { Vec2, Vec2_addC } from "../../linearAlgebra";
+import { ShapeType, TaggedWithShape } from "./Shape";
 
-export class Rect implements Shape {
+export class Rect implements TaggedWithShape {
+    type = ShapeType.RECTANGLE;
     // x, y are topleft
     pos: Vec2;
     width: number;
@@ -14,78 +13,19 @@ export class Rect implements Shape {
         this.width = width;
         this.height = height;
     }
-    center(): Vec2 {
-        return new Vec2(
-            this.pos.x + this.width / 2,
-            this.pos.y + this.height / 2,
-        );
-    }
-    transform(m: Mat23, s?: Shape): Polygon | Rect {
-        // TODO: resize existing pts array?
-        // TODO: if m has no skew or rotation (only scale and translation), return a Rect
-        const p = (s && s instanceof Polygon && s.pts.length == 4)
-            ? s
-            : new Polygon([new Vec2(), new Vec2(), new Vec2(), new Vec2()]);
-        Mat23_transformPointV_m(m, this.pos, p.pts[0]);
-        Mat23_transformPoint_m(m, this.pos.x + this.width, this.pos.y, p.pts[1]);
-        Mat23_transformPoint_m(m, this.pos.x + this.width, this.pos.y + this.height, p.pts[2]);
-        Mat23_transformPoint_m(m, this.pos.x, this.pos.y + this.height, p.pts[3]!);
-        return p;
-    }
-    bbox(r?: Rect): Rect {
-        if (r) {
-            Vec2_copy(this.pos, r.pos);
-            r.width = this.width;
-            r.height = this.height;
-            return r;
-        }
-        else {
-            return this.clone();
-        }
-    }
-    area(): number {
-        return this.width * this.height;
-    }
-    clone(): Rect {
-        return new Rect(this.pos, this.width, this.height);
-    }
-    collides(shape: Shape | Vec2): boolean {
-        return testRectShape(this, shape);
-    }
-    contains(point: Vec2): boolean {
-        return this.collides(point);
-    }
-    raycast(origin: Vec2, direction: Vec2) {
-        return raycastRect(origin, direction, this);
-    }
-    random(rng: RandomSource): Vec2 {
-        return new Vec2(
-            this.pos.x + Random_floatBelow(rng, this.width),
-            this.pos.y + Random_floatBelow(rng, this.height));
-    }
-    support(direction: Vec2) {
-        const pts = Rect_points(this);
-        var maxPoint!: Vec2;
-        var maxDistance = -Infinity;
-        var vertex;
-        for (var i = 0; i < pts.length; i++) {
-            vertex = pts[i]!;
-            const distance = Vec2_dot(vertex, direction);
-            if (distance > maxDistance) {
-                maxDistance = distance;
-                maxPoint = vertex;
-            }
-        }
-
-        return maxPoint;
-    }
-    get gjkCenter() {
-        return this.pos;
-    }
-    closestPt(p: Vec2): Vec2 | undefined {
-        // TODO
-        return undefined;
-    }
+    // center(): Vec2 {
+    //     return new Vec2(
+    //         this.pos.x + this.width / 2,
+    //         this.pos.y + this.height / 2,
+    //     );
+    // }
+    // collides(shape: Shape | Vec2): boolean {
+    //     return testRectShape(this, shape);
+    // }
+    // closestPt(p: Vec2): Vec2 | undefined {
+    //     // TODO
+    //     return undefined;
+    // }
 }
 
 export const Rect_points = (rect: Rect): [Vec2, Vec2, Vec2, Vec2] => {

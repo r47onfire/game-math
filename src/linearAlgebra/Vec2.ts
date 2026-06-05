@@ -247,6 +247,10 @@ export const Vec2_unit_m = (v: Vec2, out: Vec2): Vec2 => {
     return out;
 }
 
+export const Vec2_unit_i = (v: Vec2): Vec2 => {
+    return Vec2_unit_m(v, v);
+}
+
 /**
  * Get the perpendicular vector.
  */

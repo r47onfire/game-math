@@ -1,18 +1,30 @@
-import { Mat23, Vec2 } from "../../linearAlgebra";
-import { RandomSource } from "../../random";
-import { RaycastResult } from "./raycast";
+import { Circle } from "./Circle";
+import { Ellipse } from "./Ellipse";
+import { Line } from "./Line";
+import { Point } from "./Point";
+import { Polygon } from "./Polygon";
 import { Rect } from "./Rect";
 
-export interface Shape {
-    transform(m: Mat23, out?: Shape): Shape;
-    bbox(out?: Rect): Rect;
-    area(): number;
-    clone(): Shape;
-    contains(pt: Vec2): boolean;
-    collides(other: Shape): boolean;
-    raycast(origin: Vec2, direction: Vec2): RaycastResult<never>;
-    random(rng: RandomSource): Vec2;
-    support(direction: Vec2): Vec2;
-    readonly gjkCenter: Vec2;
-    closestPt(from: Vec2): Vec2 | undefined;
+export interface TaggedWithShape {
+    readonly type: ShapeType;
 }
+
+export const enum ShapeType {
+    CIRCLE,
+    ELLIPSE,
+    LINE,
+    POINT,
+    POLYGON,
+    RECTANGLE,
+}
+
+export type ShapeClassForType<T extends ShapeType> = {
+    [ShapeType.CIRCLE]: Circle,
+    [ShapeType.ELLIPSE]: Ellipse,
+    [ShapeType.LINE]: Line,
+    [ShapeType.POINT]: Point,
+    [ShapeType.POLYGON]: Polygon,
+    [ShapeType.RECTANGLE]: Rect,
+}[T];
+
+export type Shape = ShapeClassForType<ShapeType>;

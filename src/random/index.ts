@@ -1,7 +1,7 @@
 import { isArray } from "lib0/array";
 import { add, floor } from "lib0/math";
 import { Color } from "../color";
-import { Vec2 } from "../linearAlgebra";
+import { Vec2, Vec2_lerp } from "../linearAlgebra";
 import { lerpNumber } from "../misc";
 import { swap } from "../sort";
 
@@ -56,7 +56,7 @@ export const Random_intBelow = (random: RandomSource, a: number): number => {
  * @returns A vector between vectors a and b.
  */
 export const Random_vec2 = (random: RandomSource, a: Vec2, b: Vec2): Vec2 => {
-    return new Vec2(Random_floatBetween(random, a.x, b.x), Random_floatBetween(random, a.y, b.y));
+    return Vec2_lerp(a, b, random());
 }
 
 /**
