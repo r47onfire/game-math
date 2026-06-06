@@ -5,7 +5,7 @@ import { deg2rad, rad2deg } from "../../misc";
 import { ShapeType, TaggedWithShape } from "./Shape";
 
 export class Ellipse implements TaggedWithShape {
-    type = ShapeType.ELLIPSE;
+    readonly type = ShapeType.ELLIPSE;
     center: Vec2;
     radiusX: number;
     radiusY: number;
@@ -16,12 +16,6 @@ export class Ellipse implements TaggedWithShape {
         this.radiusY = ry;
         this.angle = degrees;
     }
-    // collides(shape: Shape) {
-    //     return testEllipseShape(this, shape);
-    // }
-    // closestPt(p: Vec2): Vec2 {
-    //     return this.support(Vec2_sub(p, this.center));
-    // }
 }
 
 export const Ellipse_fromMat2 = (tr: Mat2) => {

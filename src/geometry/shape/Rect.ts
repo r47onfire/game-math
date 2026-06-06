@@ -3,7 +3,7 @@ import { Vec2, Vec2_addC } from "../../linearAlgebra";
 import { ShapeType, TaggedWithShape } from "./Shape";
 
 export class Rect implements TaggedWithShape {
-    type = ShapeType.RECTANGLE;
+    readonly type = ShapeType.RECTANGLE;
     // x, y are topleft
     pos: Vec2;
     width: number;
@@ -13,20 +13,13 @@ export class Rect implements TaggedWithShape {
         this.width = width;
         this.height = height;
     }
-    // center(): Vec2 {
-    //     return new Vec2(
-    //         this.pos.x + this.width / 2,
-    //         this.pos.y + this.height / 2,
-    //     );
-    // }
-    // collides(shape: Shape | Vec2): boolean {
-    //     return testRectShape(this, shape);
-    // }
-    // closestPt(p: Vec2): Vec2 | undefined {
-    //     // TODO
-    //     return undefined;
-    // }
 }
+
+export const Rect_center = (rect: Rect) =>
+    new Vec2(
+        rect.pos.x + rect.width / 2,
+        rect.pos.y + rect.height / 2,
+    );
 
 export const Rect_points = (rect: Rect): [Vec2, Vec2, Vec2, Vec2] => {
     const { pos: { x, y }, width, height } = rect;

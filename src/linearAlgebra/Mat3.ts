@@ -1,7 +1,7 @@
 import { cos, sin } from "../common";
 import { Mat2 } from "./Mat2";
 
-class Mat3 {
+export class Mat3 {
     // m11 m12 m13
     // m21 m22 m23
     // m31 m32 m33

@@ -10,7 +10,7 @@ type ContainsDispatchTable = {
     [T in ShapeType]: (shape: ShapeClassForType<T>, point: Vec2, includeBorder?: boolean) => boolean;
 };
 
-const lessThan = (a: number, b: number, orEqualTo: boolean) => orEqualTo ? a <= b : a < b;
+export const lessThan = (a: number, b: number, orEqualTo: boolean) => orEqualTo ? a <= b : a < b;
 
 export const Circle_contains: ContainsDispatchTable[ShapeType.CIRCLE] = (circle, point, includeBorder = true) =>
     lessThan(Vec2_distance_squared(circle.center, point), circle.radius, includeBorder);
@@ -19,7 +19,7 @@ export const Ellipse_contains: ContainsDispatchTable[ShapeType.ELLIPSE] = (ellip
     // Both methods work, but the second one is faster
     /*point = Vec2_sub(point, ellipse.center);
     point = Mat2_transformPoint(Mat2_inverse(Ellipse_toMat2(ellipse)), point);
-    return Circle_contains(new Circle(new Vec2(), 1), point, includeBorder) */
+    return Circle_contains(Circle_UNIT_DISC, point, includeBorder) */
     const { center, radiusX, radiusY } = ellipse;
     point = Vec2_sub(point, center);
     const angle = deg2rad(ellipse.angle);
@@ -56,8 +56,8 @@ export const Point_contains = (point: Point, pt: Vec2) => Vec2_equals(point.pt, 
 // https://wrfranklin.org/Research/Short_Notes/pnpoly.html
 export const Polygon_contains = (poly: Polygon, pt: Vec2) => {
     var c = false;
-    const p = poly.pts;
-    for (var i = 0, j = p.length - 1; i < p.length; j = i++) {
+    const p = poly.pts, l = p.length;
+    for (var i = 0, j = l - 1; i < l; j = i++) {
         if (((p[i]!.y > pt.y) != (p[j]!.y > pt.y))
             && (pt.x < (p[j]!.x - p[i]!.x) * (pt.y - p[i]!.y) / (p[j]!.y - p[i]!.y) + p[i]!.x))
             c = !c;
