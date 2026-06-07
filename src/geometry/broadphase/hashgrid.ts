@@ -8,8 +8,9 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
     #cellSize: number;
     #columns: number;
     #grid: T[][] = [];
-    #hashesForObject = new Map<T, [Shape, number[]]>();
+    #hashesForObject = new Map<T, number[]>();
     #objectsToAddOnNextUpdate: T[] = [];
+    #objectToShape = new Map<T, Shape>;
 
     constructor(bounds: Rect, gridSize = 64) {
         this.#bounds = Rect_clone(bounds);
@@ -24,7 +25,7 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
 
     remove(obj: T) {
         // Remove the object from all cells it is contained in
-        const hashes = this.#hashesForObject.get(obj)?.[1];
+        const hashes = this.#hashesForObject.get(obj);
         if (hashes) {
             for (var i = 0; i < hashes.length; i++) {
                 this.#removeObjectFromGridByHash(obj, hashes[i]!);
@@ -34,18 +35,18 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
         this.#objectsToAddOnNextUpdate = this.#objectsToAddOnNextUpdate.filter(o => o !== obj);
     }
 
-    clear() {
+    clear(clearShapesForObject = true) {
         this.#grid = [];
         this.#objectsToAddOnNextUpdate = [];
         this.#hashesForObject.clear();
+        if (clearShapesForObject) this.#objectToShape.clear();
     }
 
     update(dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined) {
         // process existing objects
         const oldSet = new Set<number>();
         const newSet = new Set<number>();
-        for (const [obj, pair] of this.#hashesForObject) {
-            const shape = pair[0], oldHashes = pair[1];
+        for (const [obj, oldHashes] of this.#hashesForObject) {
             // // Check if this world area changed since last frame
             // const versions = this.versionsForObject.get(obj);
             // if (
@@ -65,8 +66,9 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
             // }
             // versions![1] = getRenderAreaVersion(obj);
             // versions![2] = getLocalAreaVersion(obj);
-            const newShape = dataCB(obj, shape);
+            const newShape = dataCB(obj, this.#objectToShape.get(obj));
             if (!newShape) continue;
+            this.#objectToShape.set(obj, newShape);
             // Retrieve the old hashes
             for (var i = 0; i < oldHashes.length; i++) {
                 oldSet.add(oldHashes[i]!);
@@ -77,24 +79,20 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
                 newSet.add(newHashes[i]!);
             }
             // Check if there is a difference between old and new hashes
-            if (oldSet.symmetricDifference(newSet).size == 0) {
-                oldSet.clear();
-                newSet.clear();
-                // No change
-                continue;
-            }
-            // Remove the object from cells it no longer occupies
-            for (const hash of oldSet.difference(newSet)) {
-                this.#removeObjectFromGridByHash(obj, hash);
-            }
-            // Add the object to newly occupied cells
-            for (const hash of newSet.difference(oldSet)) {
-                this.#addObjectToGridByHash(obj, hash);
-            }
-            // Replace the hashes
-            oldHashes.length = 0;
-            for (var i = 0; i < newHashes.length; i++) {
-                oldHashes.push(newHashes[i]!);
+            if (oldSet.symmetricDifference(newSet).size > 0) {
+                // Remove the object from cells it no longer occupies
+                oldSet.difference(newSet).forEach(hash => {
+                    this.#removeObjectFromGridByHash(obj, hash);
+                });
+                // Add the object to newly occupied cells
+                newSet.difference(oldSet).forEach(hash => {
+                    this.#addObjectToGridByHash(obj, hash);
+                });
+                // Replace the hashes
+                oldHashes.length = 0;
+                for (var i = 0; i < newHashes.length; i++) {
+                    oldHashes.push(newHashes[i]!);
+                }
             }
             oldSet.clear();
             newSet.clear();
@@ -104,6 +102,7 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
             const obj = this.#objectsToAddOnNextUpdate[i]!;
             const shape = dataCB(obj, undefined);
             if (!shape) continue;
+            this.#objectToShape.set(obj, shape);
             const bbox = Shape_bbox(shape);
             if (!this.#isInside(bbox)) {
                 this.#resizeToFit(bbox);
@@ -113,7 +112,7 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
             for (var i = 0; i < hashes.length; i++) {
                 this.#addObjectToGridByHash(obj, hashes[i]!);
             }
-            this.#hashesForObject.set(obj, [shape, hashes]);
+            this.#hashesForObject.set(obj, hashes);
             // Done with this one
             this.#objectsToAddOnNextUpdate.splice(i--, 1);
         }
@@ -125,8 +124,7 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
     ) {
         const checked = new Set<T>();
         const collisions = new Set<T>();
-        for (const [obj1, pair] of this.#hashesForObject) {
-            const hashes = pair[1];
+        for (const [obj1, hashes] of this.#hashesForObject) {
             if (!checkCB(obj1)) continue;
             checked.add(obj1);
             for (var i = 0; i < hashes.length; i++) {
@@ -246,9 +244,10 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
         this.#columns = floor(this.#bounds.width / this.#cellSize);
 
         // TODO: Recalculate hashes instead of restarting from scratch
+        // TODO: maybe use a 2D array instead?
         const objects = [...this.#hashesForObject.keys()];
 
-        this.clear();
+        this.clear(false);
 
         for (const obj of objects) {
             this.add(obj);
