@@ -1,3 +1,4 @@
+export * from "./broadphase";
 export * from "./convexHull";
 export * from "./imageTrace";
 export * from "./polygonGeneration";

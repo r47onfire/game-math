@@ -80,6 +80,7 @@ const perpDistance = (c: Vec2, a: Vec2, b: Vec2): number => {
 }
 
 // Ramer–Douglas–Peucker algorithm used to simplify the polygons
+// TODO: make this in-place?
 const RDP = (points: Vec2[], epsilon: number): Vec2[] => {
     if (points.length < 3) return points;
 

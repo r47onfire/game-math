@@ -96,6 +96,10 @@ export const Vec2_sub = (a: Vec2, b: Vec2): Vec2 => {
     return new Vec2(a.x - b.x, a.y - b.y);
 }
 
+export const Vec2_subC = (a: Vec2, x: number, y: number): Vec2 => {
+    return new Vec2(a.x - x, a.y - y);
+}
+
 /**
  * Calculates the difference of the vectors
  * @param v - The first term
