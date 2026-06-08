@@ -7,4 +7,4 @@ export * from "./linearAlgebra";
 export * from "./misc";
 export * from "./sort";
 export * from "./random";
-
+export * from "./monkeypatch";
