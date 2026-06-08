@@ -1,6 +1,6 @@
-import type { BroadphaseAlgorithm } from ".";
+import type { BroadphaseAlgorithm, BroadphaseDataCallback } from ".";
 import { Vec2, Vec2_subC } from "../../linearAlgebra";
-import { Rect, Shape, Shape_bbox } from "../shape";
+import { Rect } from "../shape";
 
 const enum Quadrant { NW = 0, NE = 1, SE = 2, SW = 3, NONE = -1 }
 
@@ -14,7 +14,7 @@ export class Quadtree<T> implements BroadphaseAlgorithm<T> {
     level: number;
     nodes: Quadtree<T>[] = [];
     #objects: T[] = [];
-    #objectToShapeMap = new Map<T, Shape>();
+    #objectToBboxMap = new Map<T, Rect>();
 
     #objectsToAddOnNextUpdate: T[] = [];
 
@@ -177,7 +177,7 @@ export class Quadtree<T> implements BroadphaseAlgorithm<T> {
                 var j = 0;
                 for (var i = 0; i < this.#objects.length; i++) {
                     const obj = this.#objects[i]!;
-                    const bbox = Shape_bbox(this.#objectToShapeMap.get(obj)!);
+                    const bbox = this.#objectToBboxMap.get(obj)!;
                     const index = this.#getQuadrant(bbox);
                     if (index !== Quadrant.NONE) {
                         this.nodes[index]!.insert(obj, bbox);
@@ -274,7 +274,7 @@ export class Quadtree<T> implements BroadphaseAlgorithm<T> {
      * Updates all objects in this node and the objects of its children
      * @param root - The tree root, since insertion happens from the root
      */
-    updateNode(orphans: [T, Rect][], dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined) {
+    updateNode(orphans: [T, Rect][], dataCB: BroadphaseDataCallback<T>) {
         var i = 0;
         while (i < this.#objects.length) {
             const obj = this.#objects[i]!;
@@ -297,23 +297,22 @@ export class Quadtree<T> implements BroadphaseAlgorithm<T> {
             // }
             // versions![1] = getRenderAreaVersion(obj);
             // versions![2] = getLocalAreaVersion(obj);
-            const oldShape = this.#objectToShapeMap.get(obj);
-            const newShape = dataCB(obj, oldShape);
-            if (!newShape) continue;
-            this.#objectToShapeMap.set(obj, newShape);
-            const bbox = Shape_bbox(newShape);
+            const oldBbox = this.#objectToBboxMap.get(obj);
+            const newBbox = dataCB(obj, oldBbox);
+            if (!newBbox) continue;
+            this.#objectToBboxMap.set(obj, newBbox);
             // If the object is outside the bounds, remove it and add it to the root later
-            if (!this.#isInside(bbox)) {
-                orphans.push([obj, bbox]);
+            if (!this.#isInside(newBbox)) {
+                orphans.push([obj, newBbox]);
                 this.#objects.splice(i, 1);
                 continue; // Don't increase i, the object at i was removed
             }
             else if (this.nodes.length > 0) {
                 // If the object fits in a quadrant, remove it and add it to the quadrant
-                const index = this.#getQuadrant(bbox);
+                const index = this.#getQuadrant(newBbox);
                 if (index !== Quadrant.NONE) {
                     // Use fast without merge, since it may remove the quadrant we are going to add it to
-                    this.nodes[index]!.insert(obj, bbox);
+                    this.nodes[index]!.insert(obj, newBbox);
                     this.#objects.splice(i, 1);
                     continue; // Don't increase i, the object at i was removed
                 }
@@ -329,7 +328,7 @@ export class Quadtree<T> implements BroadphaseAlgorithm<T> {
     /**
      * Update this tree
      */
-    update(dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined) {
+    update(dataCB: BroadphaseDataCallback<T>) {
         const orphans: [T, Rect][] = [];
         this.updateNode(orphans, dataCB);
         // Reinsert all objects that were removed because they went outside the bounds of their quadrant
@@ -339,9 +338,9 @@ export class Quadtree<T> implements BroadphaseAlgorithm<T> {
         // Insert all the objects that are new
         for (var i = 0; i < this.#objectsToAddOnNextUpdate.length; i++) {
             const obj = this.#objectsToAddOnNextUpdate[i]!;
-            const shape = dataCB(obj, undefined);
-            if (!shape) continue;
-            this.insert(obj, Shape_bbox(shape));
+            const bbox = dataCB(obj, undefined);
+            if (!bbox) continue;
+            this.insert(obj, bbox);
             // Done with this one
             this.#objectsToAddOnNextUpdate.splice(i--, 1);
         }
@@ -575,7 +574,7 @@ export class ResizingQuadtree<T> implements BroadphaseAlgorithm<T> {
         this.#root.clear();
     }
 
-    update(dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined): void {
+    update(dataCB: BroadphaseDataCallback<T>): void {
         const orphans: [T, Rect][] = [];
         this.#root.updateNode(orphans, dataCB);
         // Reinsert all objects that were removed because they went outside the bounds of their quadrant
@@ -585,9 +584,9 @@ export class ResizingQuadtree<T> implements BroadphaseAlgorithm<T> {
         // Insert all the objects that are new
         for (var i = 0; i < this.#objectsToAddOnNextUpdate.length; i++) {
             const obj = this.#objectsToAddOnNextUpdate[i]!;
-            const shape = dataCB(obj, undefined);
-            if (!shape) continue;
-            this.#addAndMaybeResize(obj, Shape_bbox(shape));
+            const bbox = dataCB(obj, undefined);
+            if (!bbox) continue;
+            this.#addAndMaybeResize(obj, bbox);
             // Done with this one
             this.#objectsToAddOnNextUpdate.splice(i--, 1);
         }

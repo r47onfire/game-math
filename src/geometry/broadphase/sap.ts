@@ -1,5 +1,5 @@
-import { BroadphaseAlgorithm } from ".";
-import { Rect, Shape, Shape_bbox } from "../shape";
+import { BroadphaseAlgorithm, BroadphaseDataCallback } from ".";
+import { Rect } from "../shape";
 
 /**
  * Left or right edge of an object's bbox, or top or bottom in vertical mode
@@ -14,7 +14,7 @@ class SapEdge<T> {
 export class SweepAndPrune<T> implements BroadphaseAlgorithm<T> {
     #edges: SapEdge<T>[] = [];
     #objects = new Map<T, [SapEdge<T>, SapEdge<T>]>();
-    #objectToShape = new Map<T, Shape>();
+    #objectToBbox = new Map<T, Rect>();
 
     #isVertical: boolean;
     constructor(vertical = false) {
@@ -54,13 +54,13 @@ export class SweepAndPrune<T> implements BroadphaseAlgorithm<T> {
     /**
      * Update edges and sort
      */
-    update(dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined) {
+    update(dataCB: BroadphaseDataCallback<T>) {
         // Update edge data
         for (const [obj, edges] of this.#objects.entries()) {
 
-            const newShape = dataCB(obj, this.#objectToShape.get(obj));
-            if (!newShape) continue;
-            this.#objectToShape.set(obj, newShape);
+            const newBbox = dataCB(obj, this.#objectToBbox.get(obj));
+            if (!newBbox) continue;
+            this.#objectToBbox.set(obj, newBbox);
 
             // // Check if this world area changed since last frame
             // const versions = this.versionsForObject.get(obj);
@@ -82,8 +82,7 @@ export class SweepAndPrune<T> implements BroadphaseAlgorithm<T> {
             // versions![1] = getRenderAreaVersion(obj);
             // versions![2] = getLocalAreaVersion(obj);
 
-            const bbox = Shape_bbox(newShape);
-            edges[1].x = (edges[0].x = this.#isVertical ? bbox.pos.y : bbox.pos.x) + (this.#isVertical ? bbox.height : bbox.width);
+            edges[1].x = (edges[0].x = this.#isVertical ? newBbox.pos.y : newBbox.pos.x) + (this.#isVertical ? newBbox.height : newBbox.width);
         }
         // Insertion sort is ~O(n) for nearly-sorted lists - which this will be
         // on all but the first iteration. The builtin Array.sort() can't make

@@ -1,7 +1,7 @@
 import { ceil, floor, max, min } from "lib0/math";
-import { BroadphaseAlgorithm } from ".";
+import { BroadphaseAlgorithm, BroadphaseDataCallback } from ".";
 import { Vec2 } from "../../linearAlgebra";
-import { Rect, Rect_clone, Shape, Shape_bbox } from "../shape";
+import { Rect, Rect_clone } from "../shape";
 
 export class HashGrid<T> implements BroadphaseAlgorithm<T> {
     #bounds: Rect;
@@ -10,7 +10,7 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
     #grid: T[][] = [];
     #hashesForObject = new Map<T, number[]>();
     #objectsToAddOnNextUpdate: T[] = [];
-    #objectToShape = new Map<T, Shape>;
+    #objectToShape = new Map<T, Rect>;
 
     constructor(bounds: Rect, gridSize = 64) {
         this.#bounds = Rect_clone(bounds);
@@ -42,7 +42,7 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
         if (clearShapesForObject) this.#objectToShape.clear();
     }
 
-    update(dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined) {
+    update(dataCB: BroadphaseDataCallback<T>) {
         // process existing objects
         const oldSet = new Set<number>();
         const newSet = new Set<number>();
@@ -66,15 +66,15 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
             // }
             // versions![1] = getRenderAreaVersion(obj);
             // versions![2] = getLocalAreaVersion(obj);
-            const newShape = dataCB(obj, this.#objectToShape.get(obj));
-            if (!newShape) continue;
-            this.#objectToShape.set(obj, newShape);
+            const newBbox = dataCB(obj, this.#objectToShape.get(obj));
+            if (!newBbox) continue;
+            this.#objectToShape.set(obj, newBbox);
             // Retrieve the old hashes
             for (var i = 0; i < oldHashes.length; i++) {
                 oldSet.add(oldHashes[i]!);
             }
             // Get the hashes of the updated world bbox
-            const newHashes = this.#hashRect(Shape_bbox(newShape));
+            const newHashes = this.#hashRect(newBbox);
             for (var i = 0; i < newHashes.length; i++) {
                 newSet.add(newHashes[i]!);
             }
@@ -100,10 +100,9 @@ export class HashGrid<T> implements BroadphaseAlgorithm<T> {
         // add all new things
         for (var i = 0; i < this.#objectsToAddOnNextUpdate.length; i++) {
             const obj = this.#objectsToAddOnNextUpdate[i]!;
-            const shape = dataCB(obj, undefined);
-            if (!shape) continue;
-            this.#objectToShape.set(obj, shape);
-            const bbox = Shape_bbox(shape);
+            const bbox = dataCB(obj, undefined);
+            if (!bbox) continue;
+            this.#objectToShape.set(obj, bbox);
             if (!this.#isInside(bbox)) {
                 this.#resizeToFit(bbox);
             }

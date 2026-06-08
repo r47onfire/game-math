@@ -57,7 +57,7 @@ export const createCogPolygon = (
     const s = sin(angle);
     const poly: Vec2[] = [new Vec2(0)];
     for (var i = 0; i < sides + 1; i++) {
-        const radius = i / 2 & 1 ? radius2 : radius1;
+        const radius = (i / 2) & 1 ? radius2 : radius1;
         poly.push(new Vec2(x * radius, y * radius));
         [x, y] = [x * c - y * s, x * s + y * c];
     }

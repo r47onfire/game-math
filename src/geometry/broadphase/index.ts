@@ -1,13 +1,17 @@
-import { Rect, Shape } from "../shape";
+import { Rect } from "../shape";
+
+export type BroadphaseDataCallback<T> = (obj: T, rect: Rect | undefined) => Rect | undefined;
 
 export interface BroadphaseAlgorithm<T> {
     add(obj: T): void;
     remove(obj: T): void;
     clear(): void;
     /**
-     * @param dataCB Passed the old shape if on update, or undefined if newly added, should return a shape if it's updated or new or undefined if the object didn't have its shape updated (can in-place modify the shape)
+     * @param dataCB Passed the old bounding box if on update, or undefined if newly added,
+     * should return a bounding box if it's updated or new or undefined if the object didn't
+     * have its bounding box updated (can in-place modify the rect)
      */
-    update(dataCB: (obj: T, shape: Shape | undefined) => Shape | undefined): void;
+    update(dataCB: BroadphaseDataCallback<T>): void;
     /**
      * Iterates all object pairs which potentially collide
      * @param checkCB should return true if the object is a valid collision object, e.g. not paused or something.
