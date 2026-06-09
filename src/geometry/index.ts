@@ -1,6 +1,6 @@
 export * from "./broadphase";
 export * from "./convexHull";
-export * from "./gjk";
+export * from "./narrowphase";
 export * from "./imageTrace";
 export * from "./polygonGeneration";
 export * from "./Quad";

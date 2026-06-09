@@ -1,6 +1,6 @@
 import { abs } from "lib0/math";
-import { Vec2, Vec2_copy, Vec2_dot, Vec2_length, Vec2_scale_sv, Vec2_scale_sv_m, Vec2_sub, Vec2_sub_m, Vec2_unit_i } from "../linearAlgebra";
-import { Shape, Shape_gjkCenter, Shape_support } from "./shape";
+import { Vec2, Vec2_copy, Vec2_dot, Vec2_length, Vec2_scale_sv, Vec2_scale_sv_m, Vec2_sub, Vec2_sub_m, Vec2_unit_i } from "../../linearAlgebra";
+import { Shape, Shape_gjkCenter, Shape_support } from "../shape";
 
 const calculateSupport = (
     shapeA: Shape,
@@ -94,8 +94,8 @@ const evolveSimplex = (
                 // The origin lies within the triangle
                 return EvolveResult.YES_INTERSECTION;
             }
-        }
             break;
+        }
     }
 
     // Try to add a new support point to the simplex
