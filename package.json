@@ -1,6 +1,7 @@
 {
     "name": "@r47onfire/game-math",
     "private": true,
+    "sideEffects": false,
     "version": "0.1.0",
     "description": "library of math useful for games",
     "main": "src/index.ts",
