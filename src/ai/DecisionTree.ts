@@ -1,6 +1,7 @@
 import { add, log2, max } from "lib0/math";
 import { values } from "lib0/object";
-import { Random_floatBelow, RandomSource } from "../random";
+import { RandomSource } from "../random";
+import { Random_floatBelow } from "../random/ops";
 type Predicate = (value: any) => boolean;
 
 export class DecisionNode {

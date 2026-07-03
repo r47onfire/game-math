@@ -42,6 +42,7 @@ export const Polygon_closestPoint: ClosestPointDispatchTable[ShapeType.POLYGON] 
     // For all edges
     const pts = polygon.pts, len = pts.length;
     const temp1 = new Vec2(), temp2 = new Vec2(), temp3 = new Vec2();
+    // TODO: rewrite this to use GJK?
     for (var i = 0, j = len - 1; i < pts.length; j = i++) {
         const closest = Line_closestPt_helper(pts[i]!, pts[j]!, pt, temp1, temp2, temp3);
         const distance = Vec2_distance_squared(pt, closest);

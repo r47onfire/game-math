@@ -4,6 +4,7 @@
         "bbox",
         "gacha",
         "GLSL",
+        "isinstance",
         "KAPLAY",
         "lerp",
         "linkify",
@@ -11,6 +12,7 @@
         "onfire",
         "rebeccapurple",
         "sdist",
-        "Stanko"
+        "Stanko",
+        "szudzik"
     ]
 }

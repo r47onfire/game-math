@@ -1,6 +1,7 @@
 import { abs, sqrt } from "lib0/math";
 import { Vec2, Vec2_addScaled_m, Vec2_clone, Vec2_fromAngle, Vec2_lerp } from "../../../linearAlgebra";
-import { Random_floatBelow, Random_indexWeighted, RandomSource } from "../../../random";
+import { RandomSource } from "../../../random";
+import { Random_floatBelow, Random_indexWeighted } from "../../../random/ops";
 import { triangulate } from "../../triangulate";
 import { Point } from "../Point";
 import { Shape, ShapeClassForType, ShapeType } from "../Shape";
