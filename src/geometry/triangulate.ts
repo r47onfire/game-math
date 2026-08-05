@@ -34,8 +34,9 @@ const pointInTriangle = (p: Vec2, a: Vec2, b: Vec2, c: Vec2) => {
 }
 
 /** true if any vertex in the list `vertices' is in the triangle abc. */
-const someInTriangle = (vertices: Vec2[], a: Vec2, b: Vec2, c: Vec2) => {
-    for (const p of vertices) {
+const someInTriangle = (vertices: Vec2[], concaveIndices: Set<number>, a: Vec2, b: Vec2, c: Vec2) => {
+    for (const i of concaveIndices) {
+        const p = vertices[i]!;
         if ((p !== a) && (p !== b) && (p !== c) && pointInTriangle(p, a, b, c)) {
             return true;
         }
@@ -44,8 +45,8 @@ const someInTriangle = (vertices: Vec2[], a: Vec2, b: Vec2, c: Vec2) => {
     return false;
 }
 
-const isEar = (a: Vec2, b: Vec2, c: Vec2, vertices: Vec2[]) => {
-    return isOrientedCcw(a, b, c) && !someInTriangle(vertices, a, b, c);
+const isEar = (a: Vec2, b: Vec2, c: Vec2, vertices: Vec2[], concaveIndices: Set<number>) => {
+    return isOrientedCcw(a, b, c) && !someInTriangle(vertices, concaveIndices, a, b, c);
 }
 
 /** Returns the indices of the polygon decomposition into triangles.
@@ -57,8 +58,13 @@ export const triangulate = (pts: Vec2[]): number[] => {
     if (len < 3) return [];
     if (len === 3) return [0, 1, 2];
 
-    var prevIdx = pts.map((_, i) => (i + len - 1) % len);
-    var nextIdx = pts.map((_, i) => (i + 1) % len);
+    var nextIdx: number[] = [];
+    var prevIdx: number[] = [];
+    for (var i = 0; i < len; i++) {
+        nextIdx[i] = i + 1;
+        prevIdx[i] = i - 1;
+    }
+    nextIdx[prevIdx[0] = len - 1] = 0;
 
     if (!isOrientedCcwPolygon(pts)) {
         var temp = prevIdx;
@@ -67,22 +73,30 @@ export const triangulate = (pts: Vec2[]): number[] => {
     }
 
     const triangles: number[] = [];
-    var nVertices = pts.length;
-    var current = 1;
-    var skipped = 0;
-    var next;
-    var prev;
+    const concaveIndices = new Set<number>();
+    const updateVertexConvexity = (i: number) => {
+        const prev = prevIdx[i]!;
+        const next = nextIdx[i]!;
+        if (!isOrientedCcw(pts[prev]!, pts[i]!, pts[next]!)) concaveIndices.add(i);
+        else concaveIndices.delete(i);
+    }
+    for (var i = 0; i < pts.length; i++) updateVertexConvexity(i);
+
+    var nVertices = pts.length, current = 0, skipped = 0, next, prev;
     while (nVertices > 3) {
         next = nextIdx[current]!;
         prev = prevIdx[current]!;
         const a = pts[prev]!;
         const b = pts[current]!;
         const c = pts[next]!;
-        if (isEar(a, b, c, pts)) {
+        if (isEar(a, b, c, pts, concaveIndices)) {
             triangles.push(prev, current, next);
             nextIdx[prev] = next;
             prevIdx[next] = prev;
-            --nVertices;
+            concaveIndices.delete(current);
+            updateVertexConvexity(prev);
+            updateVertexConvexity(next);
+            nVertices--;
             skipped = 0;
         }
         else if (++skipped > nVertices) {
