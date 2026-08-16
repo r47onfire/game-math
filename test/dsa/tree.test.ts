@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { AVLNode, AVLTree, AVLTree_delete, AVLTree_getBookends, AVLTree_set, AVLTree_updateByMapping, AVLTree_walk } from "../../src/dsa/avl_tree";
+import { AVLNode, AVLTree, AVLTree_delete, AVLTree_getBookends, AVLTree_set, AVLTree_updateByMapping, AVLTree_walk } from "../../src/dsa/avlTree";
 import { compareNumbers } from "../../src/dsa/sort";
 
 test("AVLTree_walk keeps things in sorted order", () => {

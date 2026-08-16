@@ -1,3 +1,3 @@
-export * from "./avl_tree";
-export * from "./linked_list";
+export * from "./avlTree";
+export * from "./linkedList";
 export * from "./sort";

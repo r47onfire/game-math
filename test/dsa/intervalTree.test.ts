@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
-import { AVLTree_set } from "../../src/dsa/avl_tree/avl";
-import { IntervalNode, IntervalTree, IntervalTree_get } from "../../src/dsa/avl_tree/interval";
+import { AVLTree_set } from "../../src/dsa/avlTree/avl";
+import { IntervalNode, IntervalTree, IntervalTree_get } from "../../src/dsa/avlTree/interval";
 import { compareNumbers } from "../../src/dsa/sort";
 
 test("finds intervals that intersect with range", () => {

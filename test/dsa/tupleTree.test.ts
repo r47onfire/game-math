@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { AVLNode, AVLTree, AVLTree_delete, AVLTree_get, AVLTree_getBookends, AVLTree_set } from "../../src/dsa/avl_tree";
+import { AVLNode, AVLTree, AVLTree_delete, AVLTree_get, AVLTree_getBookends, AVLTree_set } from "../../src/dsa/avlTree";
 
 type Key = readonly [number, number];
 const lexComparator = (a: Key, b: Key) => {

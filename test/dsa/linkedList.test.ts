@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { LinkedList, LinkedList_toArray, LinkedList_fromArray } from "../../src/dsa/linked_list";
+import { LinkedList, LinkedList_toArray, LinkedList_fromArray } from "../../src/dsa/linkedList";
 
 test("linked list from array to array roundtrips", () => {
     expect(LinkedList_toArray(LinkedList_fromArray([1, 2, 3]))).toEqual([1, 2, 3]);
