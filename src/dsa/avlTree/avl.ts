@@ -13,15 +13,13 @@ export class AVLNode<K, V> {
     ) {
         this.left = left as this;
         this.right = right as this;
-        this.height = AVLTree_combinedHeight(left, right);
+        this.height = 1 + max(AVLTree_height(left), AVLTree_height(right));
     }
 }
 
 export type AVLTree<K, V> = AVLNode<K, V> | null;
 
 export const AVLTree_height = (tree: AVLTree<any, any>) => tree?.height ?? 0;
-
-export const AVLTree_combinedHeight = (left: AVLTree<any, any>, right: AVLTree<any, any>) => 1 + max(AVLTree_height(left), AVLTree_height(right));
 
 export type NodeMaker<K, V, N> = new (key: K, value: V, left: N | null, right: N | null) => N;
 
@@ -251,4 +249,16 @@ export const AVLTree_getBookends = <T extends AVLNode<K, any>, K>(tree: T | null
         }
     }
     return [left, right];
+}
+
+export const AVLTree_fromMap = <K, V>(map: Map<K, V>, comparator: Comparator<K>): AVLTree<K, V> => {
+    var tree: AVLTree<K, V> = null;
+    map.forEach((v, k) => tree = AVLTree_set(tree, k, v, AVLNode, comparator));
+    return tree;
+}
+
+export const AVLTree_fromObject = <K extends PropertyKey, V>(map: Record<K, V>, comparator: Comparator<K>): AVLTree<K, V> => {
+    var tree: AVLTree<K, V> = null;
+    (Object.entries(map) as [K, V][]).forEach(({ 0: k, 1: v }) => tree = AVLTree_set(tree, k, v, AVLNode, comparator));
+    return tree;
 }

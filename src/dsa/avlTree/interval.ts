@@ -2,7 +2,6 @@ import { max, min } from "lib0/math";
 import { between, compareNumbers } from "../sort";
 import { AVLNode } from "./avl";
 
-
 export class IntervalNode<T> extends AVLNode<number, readonly [T, end: number]> {
     readonly leftStart: number;
     readonly rightEnd: number;
@@ -49,9 +48,7 @@ export const IntervalTree_get = <T>(
     return out;
 }
 
-const intervalsIntersect = (a: number, b: number, x: number, y: number) => {
-    return (
-        between(a, x, y, compareNumbers) || between(b, x, y, compareNumbers) // [a, b] intersects or is contained within [x, y]
-        || between(x, a, b, compareNumbers) || between(y, a, b, compareNumbers) // [x, y] intersects or is contained within [a, b]
-    );
-}
+const intervalsIntersect = (a: number, b: number, x: number, y: number) => (
+    between(a, x, y, compareNumbers) || between(b, x, y, compareNumbers) // [a, b] intersects or is contained within [x, y]
+    || between(x, a, b, compareNumbers) || between(y, a, b, compareNumbers) // [x, y] intersects or is contained within [a, b]
+);

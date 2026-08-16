@@ -1,4 +1,5 @@
 import { from as Array_from } from "lib0/array";
+import { min } from "lib0/math";
 
 class LinkedListNode<T> {
     readonly length: number;
@@ -20,12 +21,10 @@ export const LinkedList_pop = <T extends NonNullable<LinkedList<any>>>(ll: T): [
     return [ll.value, ll.next];
 }
 export const LinkedList_popN = <T extends NonNullable<LinkedList<any>>>(ll: T | null, popAmount: number): [values: T["value"][], rest: T | null] => {
-    const out: T["value"][] = Array_from({ length: LinkedList_length(ll) });
+    const out: T["value"][] = Array_from({ length: min(popAmount, LinkedList_length(ll)) });
     var i = 0;
-    for (; popAmount > 0 && ll; popAmount--) {
-        const { 0: value, 1: rest } = LinkedList_pop(ll!);
-        out[i++] = value;
-        ll = rest as any;
+    for (; popAmount > 0 && ll; popAmount--, ll = ll.next) {
+        out[i++] = ll.value;
     }
     return [out, ll];
 }
