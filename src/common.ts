@@ -1,9 +1,9 @@
 export const sin = Math.sin;
 export const cos = Math.cos;
 export const tan = Math.tan;
-export const PI = Math.PI;
-export const TAU = PI * 2;
-export const HALF_PI = PI / 2;
+export const PI = /* @__PURE__ */ Math.PI;
+export const TAU = /* @__PURE__ */ PI * 2;
+export const HALF_PI = /* @__PURE__ */ PI / 2;
 export const atan2 = Math.atan2;
 export const asin = Math.asin;
 export const acos = Math.acos;
@@ -17,7 +17,7 @@ export const issubclass = <A, B>(sub: abstract new (...args: any[]) => A, super_
     return sub.prototype instanceof super_ as any;
 }
 
-const idMap = new WeakMap<object, number>();
+const idMap = /* @__PURE__ */ new WeakMap<object, number>();
 var idCounter = 0;
 export const id = (obj: object): number => {
     if (!idMap.has(obj)) idMap.set(obj, idCounter++);
