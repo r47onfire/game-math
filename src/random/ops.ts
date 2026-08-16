@@ -4,7 +4,7 @@ import { RandomSource } from ".";
 import { Color } from "../color";
 import { Vec2, Vec2_lerp } from "../linearAlgebra";
 import { lerpNumber } from "../misc";
-import { swap } from "../sort";
+import { swap } from "../dsa/sort";
 
 
 /**

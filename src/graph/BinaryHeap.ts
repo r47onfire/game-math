@@ -1,5 +1,5 @@
 import { floor } from "lib0/math";
-import { swap } from "../sort";
+import { swap } from "../dsa/sort";
 
 export class BinaryHeap<T> {
     #items: T[];

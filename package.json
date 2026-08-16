@@ -3,12 +3,13 @@
     "private": true,
     "sideEffects": false,
     "version": "0.1.0",
-    "description": "library of math useful for games",
+    "description": "library of math useful for games and apps",
     "main": "src/index.ts",
     "type": "module",
     "scripts": {
         "build": "bun scripts/build.ts",
-        "prepare": "bun run build --minify"
+        "prepare": "bun run build --minify",
+        "test": "bun test"
     },
     "repository": {
         "type": "git",

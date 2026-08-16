@@ -1,7 +1,7 @@
 import { last } from "lib0/array";
 import { Vec2 } from "../linearAlgebra";
 import { orient } from "./utils";
-import { swap } from "../sort";
+import { swap } from "../dsa/sort";
 
 /** true if the angle is oriented counter clockwise */
 const isOrientedCcw = (a: Vec2, b: Vec2, c: Vec2) => orient(a, b, c) > 0;
