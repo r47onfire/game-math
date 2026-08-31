@@ -5,7 +5,7 @@ export const between = <T>(x: T, low: T, high: T, comparator: Comparator<T>) => 
 export const insertionSort = <T>(a: T[], cmp: Comparator<T>) => {
     for (var i = 1; i < a.length; i++) {
         for (var j = i - 1; j >= 0; j--) {
-            if (cmp(a[j]!, a[j + 1]!) < 0) break;
+            if (cmp(a[j]!, a[j + 1]!) >= 0) break;
             swap(a, j, j + 1);
         }
     }
