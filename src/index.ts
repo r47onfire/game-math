@@ -2,6 +2,7 @@ export * from "./ai";
 export * from "./color";
 export * from "./common";
 export * from "./dsa";
+export * from "./events";
 export * from "./geometry";
 export * from "./graph";
 export * from "./hash";
